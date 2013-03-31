@@ -3,9 +3,10 @@
 void Mosaic::setup(){
     loadImages();
     
-    buildMosaicImage(targetImage);
-    displayImage = mosaicImage;
-    z=1;
+//    buildMosaicImage(targetImage);
+    displayImage = grayImages[idxImageAtDisplay];
+    idxTargetImage = idxImageAtDisplay;
+//    z=1;
 
     
 }
@@ -13,7 +14,7 @@ void Mosaic::setup(){
 void Mosaic::update(){
     if(z>0){
         displayImage = mosaicImage;
-        ofxCvGrayscaleImage img_source = grayImages[targetImage];
+        ofxCvGrayscaleImage img_source = grayImages[idxTargetImage];
         
         displayImage.convertToRange(0,  int(255*z));
         img_source.convertToRange(0, int(255*(1-z)));
@@ -25,8 +26,8 @@ void Mosaic::update(){
 
 void Mosaic::draw(){
     showIcons(640, 0,  10);
-    grayImages[targetImage].draw(0,0);
-    displayImage.draw(0, 480);
+    displayImage.draw(0, 0);
+    grayImages[idxTargetImage].draw(0,480, mid_width, mid_height);
     
 }
 
@@ -99,7 +100,7 @@ void Mosaic::buildMosaicImage(int targetImageIdx){
     ofxCvGrayscaleImage tempImage = grayImages[targetImageIdx];
     tempImage.resize(mosaicX, mosaicY);
     IplImage * cvImage =   tempImage.getCvImage();
-    mosaicImage = grayImages[targetImage];
+    mosaicImage = grayImages[idxTargetImage];
     
     cout<< "image widthstep is "<<tempImage.getCvImage()->widthStep;
     unsigned char* pixels = tempImage.getPixels();

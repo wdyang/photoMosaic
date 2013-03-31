@@ -126,8 +126,8 @@ void testApp::keyPressed(int key){
 			if (threshold < 0) threshold = 0;
 			break;
         case 'n':
-            photoMosaic->targetImage++;
-            photoMosaic->buildMosaicImage(photoMosaic->targetImage);
+            photoMosaic->idxTargetImage++;
+            photoMosaic->buildMosaicImage(photoMosaic->idxTargetImage);
             photoMosaic->z=1;
             break;
 	}

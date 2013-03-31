@@ -19,7 +19,8 @@ public:
     void draw();
     
     //    Weidong add code for Mosaic
-    int targetImage = 0;
+    int idxImageAtDisplay = 0;
+    int idxTargetImage = 0;
     
     //        const int full_width=320;
     //        int full_height = 240;
@@ -49,7 +50,6 @@ public:
     int getMatchingIcon(int val);
     
     //    For transition, zoom out action
-    int newTargetImage=0;
     ofxCvGrayscaleImage midStageMosaic;   //8x8 stitch of full size images
     ofxCvGrayscaleImage finalStageMosaic;  //32x32 stitch of mid size images
     ofxCvGrayscaleImage newMosaic;      //32x32 stitch of icon size images
