@@ -50,7 +50,7 @@ class testApp : public ofBaseApp{
 
     
 //    Weidong add code for Mosaic
-        int targetImage = 5;
+        int targetImage = 0;
     
 //        const int full_width=320;
 //        int full_height = 240;
