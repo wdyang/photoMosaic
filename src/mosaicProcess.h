@@ -15,11 +15,14 @@ public:
     Mosaic mosaic;
     ImageSet imageSet;
     MosaicSet mosaicSet;
+    bool AdvanceRandom = true;
+    bool UseEnd = false;
     
     int idxImageAtDisplay = 0;
     int idxTargetImage = 0;
     
-    float z;
+    float z; //0 - 1
+    int drawStage; //0 show gray image; 1, transition from mosaic to gary; 2, transition from midstage to mosaic; 3, transition from from to midstage
     
     ofxCvGrayscaleImage mosaicImage;
     ofxCvGrayscaleImage displayImage;
@@ -30,12 +33,7 @@ public:
     int mosaicAvg[full_height/icon_height][full_width/icon_width];
     
     void advance();
-    
-    //    For transition, zoom out action
-//    ofxCvGrayscaleImage midStageMosaic;   //8x8 stitch of full size images
-//    ofxCvGrayscaleImage finalStageMosaic;  //32x32 stitch of mid size images
-//    ofxCvGrayscaleImage newMosaic;      //32x32 stitch of icon size images
-//    int center_x, center_y;         //where the old mosaic fits in the new mosaic
-//    int mid_corner_x, mid_corner_y;  //midStageMosaic left top corner in the new mosaic index
-    
+    void transition_mosaic2gray();
+    void transition_mid2mosaic();
+    void transition_from2mid();
 };

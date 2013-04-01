@@ -13,6 +13,8 @@
 class testApp : public ofBaseApp{
 
 public:
+    int cam_w = 640;
+    int cam_h = 480;
     void setup();
     void update();
     void draw();
@@ -45,5 +47,6 @@ public:
     bool				bLearnBakground;
 
     MosaicProcess mosaicProcess;
+    ImageSet *imageSet;
 };
 

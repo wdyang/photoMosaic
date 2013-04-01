@@ -15,6 +15,7 @@ public:
 
     int numImages;
     
+    void addImage(ofxCvGrayscaleImage imageIn);
     void loadImages();
     void setImageFromFile(int i, string fname);
     void showIcons(int x, int y, int numCol);
