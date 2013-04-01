@@ -1,43 +1,14 @@
-#include "mosaic.h"
+#include "imageSet.h"
+#include "mosaicSet.h"
 
-void Mosaic::setup(){
-    loadImages();
-    
-//    buildMosaicImage(targetImage);
-    displayImage = grayImages[idxImageAtDisplay];
-    idxTargetImage = idxImageAtDisplay;
-//    z=1;
-
-    
-}
-
-void Mosaic::update(){
-    if(z>0){
-        displayImage = mosaicImage;
-        ofxCvGrayscaleImage img_source = grayImages[idxTargetImage];
-        
-        displayImage.convertToRange(0,  int(255*z));
-        img_source.convertToRange(0, int(255*(1-z)));
-        displayImage+=img_source;
-        z-=0.001;
-    }
-
-}
-
-void Mosaic::draw(){
-    showIcons(640, 0,  10);
-    displayImage.draw(0, 0);
-    grayImages[idxTargetImage].draw(0,480, mid_width, mid_height);
-    
-}
-
-void Mosaic::loadImages(){
+void ImageSet::loadImages(){
     dir.listDir("images/");
     dir.sort();
     numImages = dir.size();
     cout<<"loaded "<<numImages<<" images.";
     if(dir.size()){
         grayImages.assign(numImages, ofxCvGrayscaleImage());
+        grayMids.assign(numImages, ofxCvGrayscaleImage());
         grayIcons.assign(numImages, ofxCvGrayscaleImage());
         imageMeans.assign(numImages, float());
         
@@ -48,7 +19,7 @@ void Mosaic::loadImages(){
     }
 }
 
-void Mosaic::setImageFromFile(int i, string fname){
+void ImageSet::setImageFromFile(int i, string fname){
     ofImage tempImage;
     tempImage.loadImage(fname);
     
@@ -73,7 +44,9 @@ void Mosaic::setImageFromFile(int i, string fname){
     ofxCvColorImage cvColor;
     cvColor.setFromPixels(tempImage.getPixels(), full_width, full_height);
     grayImages[i] = cvColor;
-    grayIcons[i]=grayImages[i];
+    grayMids[i]=grayImages[i];
+    grayMids[i].resize(mid_width, mid_height);
+    grayIcons[i]=grayMids[i];
     grayIcons[i].resize(icon_width, icon_height);
     
     CvScalar avg = cvAvg(grayIcons[i].getCvImage());
@@ -82,7 +55,7 @@ void Mosaic::setImageFromFile(int i, string fname){
     
 }
 
-void Mosaic::showIcons(int x, int y, int numCol){
+void ImageSet::showIcons(int x, int y, int numCol){
     int row = 0, col = 0;
     for(int i=0; i<numImages; i++){
         grayIcons[i].draw(x+col*icon_width, y+row*icon_height);
@@ -95,33 +68,7 @@ void Mosaic::showIcons(int x, int y, int numCol){
     
 }
 
-void Mosaic::buildMosaicImage(int targetImageIdx){
-    //first shrink image down
-    ofxCvGrayscaleImage tempImage = grayImages[targetImageIdx];
-    tempImage.resize(mosaicX, mosaicY);
-    IplImage * cvImage =   tempImage.getCvImage();
-    mosaicImage = grayImages[idxTargetImage];
-    
-    cout<< "image widthstep is "<<tempImage.getCvImage()->widthStep;
-    unsigned char* pixels = tempImage.getPixels();
-    for (int i=0; i<mosaicY; i++){
-        unsigned char* ptr = (unsigned char*)(cvImage->imageData + i * cvImage->widthStep);
-        for (int j=0; j<mosaicX; j++){
-            cout<<(int) ptr[j]<<"(";
-            mosaicAvg[i][j]=(int) ptr[j];
-            mosaicIdx[i][j] = getMatchingIcon((int) ptr[j]);
-            cout<<mosaicIdx[i][j]<<")";
-            mosaicImage.setROI(j*icon_width, i*icon_height, icon_width, icon_height);
-            mosaicImage.setRoiFromPixels(grayIcons[mosaicIdx[i][j]].getPixels(), icon_width, icon_height);
-        }
-        cout<<endl;
-    }
-    //clear ROI
-    mosaicImage.setROI(0,0,full_width,full_height);
-    
-}
-
-int Mosaic::getMatchingIcon(int val){
+int ImageSet::getMatchingIcon(int val){
     float diff = 1000000;
     int idx;
     for(int i=0; i<numImages; i++){

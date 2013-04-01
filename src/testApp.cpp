@@ -18,8 +18,8 @@ void testApp::setup(){
 
 	bLearnBakground = true;
 	threshold = 80;
-    photoMosaic = new Mosaic();
-    photoMosaic -> setup();
+//    mosaicProcess = new MosaicProcess();
+    mosaicProcess.setup();
     
 }
 
@@ -60,7 +60,7 @@ void testApp::update(){
 		contourFinder.findContours(grayDiff, 20, (340*240)/3, 10, true);	// find holes
 	}
     
-    photoMosaic->update();
+    mosaicProcess.update();
 }
 
 //--------------------------------------------------------------
@@ -105,7 +105,7 @@ void testApp::draw(){
 			  << "threshold " << threshold << " (press: +/-)" << endl
 			  << "num blobs found " << contourFinder.nBlobs << ", fps: " << ofGetFrameRate();
 	ofDrawBitmapString(reportStr.str(), 20, 600);
-    photoMosaic->draw();
+    mosaicProcess.draw();
 
 }
 
@@ -126,9 +126,7 @@ void testApp::keyPressed(int key){
 			if (threshold < 0) threshold = 0;
 			break;
         case 'n':
-            photoMosaic->idxTargetImage++;
-            photoMosaic->buildMosaicImage(photoMosaic->idxTargetImage);
-            photoMosaic->z=1;
+            mosaicProcess.advance();
             break;
 	}
 }
