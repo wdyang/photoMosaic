@@ -64,6 +64,8 @@ public:
 //     OSC control for touchOSC
     ofxOscReceiver ipadReceiver;
     ofxOscSender    ipadSender;
+    string ipadIP;
+    bool    bSenderLive;
     void parseIpadOSCMessage();
     void oscSendInitConfig();
     void oscSendInt(const string &address, int msg);

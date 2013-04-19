@@ -30,7 +30,7 @@ void testApp::setup(){
     
 //    Setup TouchOSC
     ipadReceiver.setup(PORT_FROM_IPAD);
-    ipadSender.setup(HOST_IPAD, PORT_TO_IPAD);
+//    ipadSender.setup(HOST_IPAD, PORT_TO_IPAD);
     
     
 }

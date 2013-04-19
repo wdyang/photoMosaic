@@ -5,6 +5,12 @@ void testApp::parseIpadOSCMessage(){
     ofxOscMessage m;
     ipadReceiver.getNextMessage(&m);
     
+    if(!bSenderLive){
+        ipadIP = m.getRemoteIp();
+        ipadSender.setup(ipadIP, PORT_TO_IPAD);
+    }
+    
+    
     string msg_string="";
     string raw_address;
     
