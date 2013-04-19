@@ -4,8 +4,14 @@
 void testApp::setup(){
 
 	#ifdef _USE_LIVE_VIDEO
+//        int numDevices = vidGrabber.listDevices();
+    
         vidGrabber.setVerbose(true);
-        vidGrabber.initGrabber(cam_w,cam_h);
+    vidGrabber.setDeviceID(0);
+    if(vidGrabber.initGrabber(cam_w,cam_h)){
+//        vidGrabber.setDeviceID(0);
+//        vidGrabber.initGrabber(cam_w,cam_h);
+    };
 	#else
         vidPlayer.loadMovie("fingers.mov");
         vidPlayer.play();
@@ -21,6 +27,11 @@ void testApp::setup(){
 //    mosaicProcess = new MosaicProcess();
     mosaicProcess.setup();
     imageSet = &(mosaicProcess.imageSet);
+    
+//    Setup TouchOSC
+    ipadReceiver.setup(PORT_FROM_IPAD);
+    ipadSender.setup(HOST_IPAD, PORT_TO_IPAD);
+    
     
 }
 
@@ -61,7 +72,11 @@ void testApp::update(){
 		contourFinder.findContours(grayDiff, 20, (cam_w*cam_h)/3, 10, true);	// find holes
 	}
     
-    mosaicProcess.update();
+    if(bUpdateMosaic) mosaicProcess.update();
+    
+    while(ipadReceiver.hasWaitingMessages()){
+        parseIpadOSCMessage();
+    }
 }
 
 //--------------------------------------------------------------
@@ -116,6 +131,9 @@ void testApp::keyPressed(int key){
 
 	switch (key){
 		case ' ':
+			bUpdateMosaic = !bUpdateMosaic;
+			break;
+		case 'l':
 			bLearnBakground = true;
 			break;
 		case '+':
@@ -129,6 +147,7 @@ void testApp::keyPressed(int key){
         case 'n':
             imageSet->addImage(grayImage);
             mosaicProcess.UseEnd = true;
+            imageSet->saveImage(grayImage);
             break;
 	}
 }

@@ -10,6 +10,15 @@
 #include "mosaicProcess.h"
 
 
+//OSC
+#include "ofxOsc.h"
+//For comminicating with TouchOSC on ipad
+#define HOST_IPAD "192.168.2.2" //ipad ip
+//#define HOST_IPAD "10.0.1.5" //ipad ip
+#define PORT_FROM_IPAD 8000
+#define PORT_TO_IPAD 9000
+
+
 class testApp : public ofBaseApp{
 
 public:
@@ -48,5 +57,19 @@ public:
 
     MosaicProcess mosaicProcess;
     ImageSet *imageSet;
+    bool    bUpdateMosaic=true;
+    
+    
+    
+//     OSC control for touchOSC
+    ofxOscReceiver ipadReceiver;
+    ofxOscSender    ipadSender;
+    void parseIpadOSCMessage();
+    void oscSendInitConfig();
+    void oscSendInt(const string &address, int msg);
+    void oscSendFloat(const string &address, float msg);
+    void oscSendFormatedFloat(const string &address, float msg, int precision); //precision is the number of decimal points
+    void oscSendString(const string &address, const string &msg);
+
 };
 

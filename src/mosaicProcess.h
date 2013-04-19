@@ -33,7 +33,8 @@ public:
     int mosaicAvg[full_height/icon_height][full_width/icon_width];
     
     void advance();
-    void transition_mosaic2gray();
-    void transition_mid2mosaic();
-    void transition_from2mid();
+    void transition_mosaic2gray(float delta);
+    void transition_mid2mosaic(float delta);
+    void transition_from2mid(float delta);
+    float speed = 0.01;
 };

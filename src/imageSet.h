@@ -1,8 +1,10 @@
+// Maintains a collection of image for producing mosaic
 #pragma once
 
 #include "ofMain.h"
 
 #include "ofxOpenCv.h"
+#include "time.h"
 
 class ImageSet{
     ofDirectory dir;
@@ -20,5 +22,5 @@ public:
     void setImageFromFile(int i, string fname);
     void showIcons(int x, int y, int numCol);
     int getMatchingIcon(int val);
-
+    void saveImage(ofxCvGrayscaleImage image);
 };

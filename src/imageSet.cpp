@@ -2,34 +2,51 @@
 #include "mosaicSet.h"
 
 void ImageSet::addImage(ofxCvGrayscaleImage imageIn){
-//    if(numImages> grayImages.size()-3){
-//        
-//    }
-    int i = numImages;
-    grayImages[i] = imageIn;
-    grayMids[i]=grayImages[i];
-    grayMids[i].resize(mid_width, mid_height);
-    grayIcons[i]=grayMids[i];
-    grayIcons[i].resize(icon_width, icon_height);
     
-    CvScalar avg = cvAvg(grayIcons[i].getCvImage());
-    imageMeans[i] = avg.val[0];
+    grayImages.push_back(imageIn);
+    ofxCvGrayscaleImage mid=imageIn;
+    mid.resize(mid_width, mid_height);
+    grayMids.push_back(mid);
+    ofxCvGrayscaleImage icon = mid;
+    icon.resize(icon_width, icon_height);
+    grayIcons.push_back(icon);
+
+    CvScalar avg = cvAvg(icon.getCvImage());
+    imageMeans.push_back(avg.val[0]);
+    
 
     numImages++;
+}
+
+void ImageSet::saveImage(ofxCvGrayscaleImage image){
+    time_t now;
+    char the_date[24];
+    
+    the_date[0] = '\0';
+    
+    now = time(NULL);
+    
+    if (now != -1)
+    {
+        strftime(the_date, 24, "%y_%m_%d_%H_%M_%S", gmtime(&now));
+    }
+    string fname;
+    fname = "capture/"+string(the_date) + ".jpg";
+    cout<<fname<<endl;
+    
+    ofImage tempImage;
+    tempImage.setFromPixels(image.getPixels(), image.getWidth(), image.getHeight(), OF_IMAGE_GRAYSCALE);
+    tempImage.saveImage(fname);
 }
 
 void ImageSet::loadImages(){
     dir.listDir("images/");
     dir.sort();
-    numImages = dir.size();
+    int numFiles = dir.size();
     cout<<"loaded "<<numImages<<" images.";
     if(dir.size()){
-        grayImages.assign(100+numImages, ofxCvGrayscaleImage());
-        grayMids.assign(100+numImages, ofxCvGrayscaleImage());
-        grayIcons.assign(100+numImages, ofxCvGrayscaleImage());
-        imageMeans.assign(100+numImages, float());
         
-        for(int i=0; i<numImages; i++){
+        for(int i=0; i<numFiles; i++){
             cout<<"reading image: "<<dir.getPath(i);
             setImageFromFile(i,dir.getPath(i));
         }
@@ -60,16 +77,9 @@ void ImageSet::setImageFromFile(int i, string fname){
     
     ofxCvColorImage cvColor;
     cvColor.setFromPixels(tempImage.getPixels(), full_width, full_height);
-    grayImages[i] = cvColor;
-    grayMids[i]=grayImages[i];
-    grayMids[i].resize(mid_width, mid_height);
-    grayIcons[i]=grayMids[i];
-    grayIcons[i].resize(icon_width, icon_height);
-    
-    CvScalar avg = cvAvg(grayIcons[i].getCvImage());
-    imageMeans[i] = avg.val[0];
-    //    cout<<"image "<<i<<" has average of "<<imageMeans[i];
-    
+    ofxCvGrayscaleImage gray;
+    gray = cvColor;
+    addImage(gray);
 }
 
 void ImageSet::showIcons(int x, int y, int numCol){
@@ -89,11 +99,12 @@ int ImageSet::getMatchingIcon(int val){
     float diff = 1000000;
     int idx;
     for(int i=0; i<numImages; i++){
-        if(abs(val - imageMeans[i])<diff){
+        if(abs(val - imageMeans[i])+ofRandom(10)<diff){
             diff = abs(val-imageMeans[i]);
             idx =i;
         }
     }
+//    cout<<"diff "<<diff<<" "<<endl;
     return idx;
 }
 
