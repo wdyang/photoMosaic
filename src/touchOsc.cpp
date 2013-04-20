@@ -39,6 +39,10 @@ void testApp::parseIpadOSCMessage(){
         oscSendFloat("/1/mosaicSpeed", mosaicProcess.speed);
         oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
 
+    }else if(raw_address=="/1/zoomOut"){
+        mosaicProcess.bZoomOut = m.getArgAsInt32(0);
+        string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
+        oscSendString("/1/labelZoom", msg);
     }else if(raw_address=="/1/snapImage"){
         int val=m.getArgAsFloat(0);
         if(val==1){
@@ -58,6 +62,10 @@ void testApp::oscSendInitConfig(){
     oscSendInt("/1/runMosaic", bUpdateMosaic);
     oscSendFloat("/1/mosaicSpeed", mosaicProcess.speed);
     oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
+    oscSendInt("/1/zoomOut", mosaicProcess.bZoomOut);
+
+    string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
+    oscSendString("/1/labelZoom", msg);
 
 }
 

@@ -144,6 +144,9 @@ void testApp::keyPressed(int key){
 			threshold --;
 			if (threshold < 0) threshold = 0;
 			break;
+		case 'z':
+            mosaicProcess.bZoomOut = ! mosaicProcess.bZoomOut;
+			break;
         case 'n':
             imageSet->addImage(grayImage);
             mosaicProcess.UseEnd = true;

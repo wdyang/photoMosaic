@@ -17,7 +17,7 @@ void MosaicProcess::setup(){
 void MosaicProcess::update(){
     if(drawStage==0){ //showing the gray image
         if(z>0){
-            z-=0.01;
+            z-=speed;
         }else{
             advance();
         }
@@ -33,20 +33,36 @@ void MosaicProcess::update(){
 
 void MosaicProcess::transition_mosaic2gray(float delta){
 //    drawStage is 1
-    if(z>0){
-        displayImage = mosaic.mosaic;
-        ofxCvGrayscaleImage img_source = imageSet.grayImages[idxTargetImage];
+    if(bZoomOut){ //Mosaic to Gray
+        if(z>0){
+            displayImage = mosaic.mosaic;
+            ofxCvGrayscaleImage img_source = imageSet.grayImages[idxTargetImage];
+            
+            displayImage.convertToRange(0,  int(255*z));
+            img_source.convertToRange(0, int(255*(1-z)));
+            displayImage+=img_source;
+            z-=delta/2;
+        }else{
+            cout<<"mosaic 2 gray done, showing gray image now"<<endl;
+            drawStage--;
+            z=1;
+        }
+    }else{ //Zoom in //Gray to Mosaic
+        if(z<1){
+            displayImage = mosaic.mosaic;
+            ofxCvGrayscaleImage img_source = imageSet.grayImages[idxTargetImage];
+            
+            displayImage.convertToRange(0,  int(255*z));
+            img_source.convertToRange(0, int(255*(1-z)));
+            displayImage+=img_source;
+            z+=delta/2;
+        }else{
+            cout<<"mosaic 2 gray done, showing gray image now"<<endl;
+            drawStage++;
+            z=8;
+        }
         
-        displayImage.convertToRange(0,  int(255*z));
-        img_source.convertToRange(0, int(255*(1-z)));
-        displayImage+=img_source;
-        z-=delta/2;
-    }else{
-        cout<<"mosaic 2 gray done, showing gray image now"<<endl;
-        drawStage--;
-        z=1;
     }
-    
 }
 
 void MosaicProcess::transition_mid2mosaic(float delta){
@@ -65,33 +81,49 @@ void MosaicProcess::transition_mid2mosaic(float delta){
     int xc1=w1/2;
     int yc1=h1/2;
     int x,y,w, h, xc, yc;
-    z *= (1+delta/5);
-    if(z<=8){ //z starts at 1, ends at 8
-        w = w0*z;
-        h = h0*z;
+    
+    if(bZoomOut){ //mid images to full mosaic
+        z *= (1+delta/5);
+        if(z<=8){ //z starts at 1, ends at 8
+            w = w0*z;
+            h = h0*z;
 
-//        xc=int((xc1-xc0)*(w-w0)*1.0/(w1-w0)) + xc0;       //linear shift center
-//        yc=int((yc1-yc0)*(h-h0)*1.0/(h1-h0)) + yc0;
-        xc=int((xc1-xc0)*pow((w-w0)*1.0/(w1-w0), 2.0)) + xc0;         //slow then fast
-        yc=int((yc1-yc0)*pow((h-h0)*1.0/(h1-h0), 2.0)) + yc0;
-        
-        x=xc-w/2; x= x < 0 ? 0 : x; x = (x+w) > w1 ? 0 : x;
-        y=yc-h/2; y= y < 0 ? 0 : y; y = (y+h) > h1 ? 0 : y;
-        
-//        x=int(z1*x0 + (1-z1)*x1);
-//        y=int(z1*y0 + (1-z1)*y1);
-//        w=int(z1*w0 + (1-z1)*w1);
-//        h=int(z1*h0 + (1-z1)*h1);
-        
-        mosaicSet.mosaicStageMidRes.setROI(x, y, w, h);
-        displayImage.allocate(w, h);
-        displayImage.setFromPixels(mosaicSet.mosaicStageMidRes.getRoiPixels(), w, h);
-        displayImage.resize(full_width, full_height);
-//        z*=(1-delta);
-    }else{
-        cout<<"mid 2 mosaic done, transition to mosaic 2 gray"<<endl;
-        drawStage--;
-        z=1;
+            xc=int((xc1-xc0)*pow((w-w0)*1.0/(w1-w0), 2.0)) + xc0;         //slow then fast
+            yc=int((yc1-yc0)*pow((h-h0)*1.0/(h1-h0), 2.0)) + yc0;
+            
+            x=xc-w/2; x= x < 0 ? 0 : x; x = (x+w) > w1 ? 0 : x;
+            y=yc-h/2; y= y < 0 ? 0 : y; y = (y+h) > h1 ? 0 : y;
+            
+            mosaicSet.mosaicStageMidRes.setROI(x, y, w, h);
+            displayImage.allocate(w, h);
+            displayImage.setFromPixels(mosaicSet.mosaicStageMidRes.getRoiPixels(), w, h);
+            displayImage.resize(full_width, full_height);
+        }else{
+            cout<<"mid 2 mosaic done, transition to mosaic 2 gray"<<endl;
+            drawStage--;
+            z=1;
+        }
+    }else{ //full mosaic to mid images
+        z /= (1+delta/5);
+        if(z>1){ //z starts at 1, ends at 8
+            w = w0*z;
+            h = h0*z;
+            
+            xc=int((xc1-xc0)*pow((w-w0)*1.0/(w1-w0), 2.0)) + xc0;         //slow then fast
+            yc=int((yc1-yc0)*pow((h-h0)*1.0/(h1-h0), 2.0)) + yc0;
+            
+            x=xc-w/2; x= x < 0 ? 0 : x; x = (x+w) > w1 ? 0 : x;
+            y=yc-h/2; y= y < 0 ? 0 : y; y = (y+h) > h1 ? 0 : y;
+            
+            mosaicSet.mosaicStageMidRes.setROI(x, y, w, h);
+            displayImage.allocate(w, h);
+            displayImage.setFromPixels(mosaicSet.mosaicStageMidRes.getRoiPixels(), w, h);
+            displayImage.resize(full_width, full_height);
+        }else{
+            cout<<"mid 2 mosaic done, transition to mosaic 2 gray"<<endl;
+            drawStage++;
+            z=5;
+        }
     }
 }
 
@@ -107,26 +139,37 @@ void MosaicProcess::transition_from2mid(float delta){
     int w1 = 5*full_width;
     int h1 = 5*full_height;
     int x,y,w, h;
-    z *= (1+delta);  //z starts from 1, ends at 5
-    if(z<=5){
-        w = w0*z;
-        h = h0*z;
-        x= int((w1 - w)/2.0);
-        y= int((h1-h)/2.0);
-//        x=int(z1*x0 + (1-z1)*x1);
-//        y=int(z1*y0 + (1-z1)*y1);
-//        w=int(z1*w0 + (1-z1)*w1);
-//        h=int(z1*h0 + (1-z1)*h1);
-        
-        mosaicSet.mosaicStageFullRes.setROI(x,y,w,h);
-        displayImage.allocate(w, h);
-        displayImage.setFromPixels(mosaicSet.mosaicStageFullRes.getRoiPixels(), w, h);
-        displayImage.resize(full_width, full_height);
-    }else{
-        drawStage--;
-        z=1;
+    if(bZoomOut){ //full image to mid mosaic
+        z *= (1+delta);  //z starts from 1, ends at 5
+        if(z<=5){
+            w = w0*z;
+            h = h0*z;
+            x= int((w1 - w)/2.0);
+            y= int((h1-h)/2.0);
+            mosaicSet.mosaicStageFullRes.setROI(x,y,w,h);
+            displayImage.allocate(w, h);
+            displayImage.setFromPixels(mosaicSet.mosaicStageFullRes.getRoiPixels(), w, h);
+            displayImage.resize(full_width, full_height);
+        }else{
+            drawStage--;
+            z=1;
+        }
+    }else{ //mid mosaic to full image
+        z /= (1+delta);  //z starts from 1, ends at 5
+        if(z>1){
+            w = w0*z;
+            h = h0*z;
+            x= int((w1 - w)/2.0);
+            y= int((h1-h)/2.0);
+            mosaicSet.mosaicStageFullRes.setROI(x,y,w,h);
+            displayImage.allocate(w, h);
+            displayImage.setFromPixels(mosaicSet.mosaicStageFullRes.getRoiPixels(), w, h);
+            displayImage.resize(full_width, full_height);
+        }else{
+            drawStage=0;
+            z=1;
+        }
     }
-
 }
 
 void MosaicProcess::draw(){
@@ -137,20 +180,39 @@ void MosaicProcess::draw(){
 }
 
 void MosaicProcess::advance(){
-    int idxPre = idxTargetImage;
-    if(UseEnd){
-        idxTargetImage = imageSet.numImages-1;
-        UseEnd=false;
-    }else if(AdvanceRandom){
-        idxTargetImage = rand()% imageSet.numImages;
-    }else{
-        idxTargetImage++;
-        if(idxTargetImage==imageSet.numImages)
-            idxTargetImage=0;
+    if(bZoomOut){ //Zooming out, previous image becomes a part of new image
+        int idxPre = idxTargetImage; //Pre is in the center of TargetImage
+        if(UseEnd){
+            idxTargetImage = imageSet.numImages-1;
+            UseEnd=false;
+        }else if(AdvanceRandom){
+            idxTargetImage = rand()% imageSet.numImages;
+        }else{
+            idxTargetImage++;
+            if(idxTargetImage==imageSet.numImages)
+                idxTargetImage=0;
+        }
+        mosaic.build(idxTargetImage, &imageSet);
+        z=1;
+        drawStage=3;
+        
+        mosaicSet.buildSet(idxPre, idxTargetImage);
+    }else{ //Zomming in, previous image becomes a mosaic that contains the new image
+        idxTargetImage=idxPre;
+        if(UseEnd){
+            idxPre = imageSet.numImages-1;
+            UseEnd=false;
+        }else if(AdvanceRandom){
+            idxPre = rand()% imageSet.numImages;
+        }else{
+            idxPre++;
+            if(idxPre==imageSet.numImages)
+                idxPre=0;
+        }
+        mosaic.build(idxTargetImage, &imageSet);
+        z=0;
+        drawStage=1;
+        
+        mosaicSet.buildSet(idxPre, idxTargetImage);
     }
-    mosaic.build(idxTargetImage, &imageSet);
-    z=1;
-    drawStage=3;
-    
-    mosaicSet.buildSet(idxPre, idxTargetImage);
 }
