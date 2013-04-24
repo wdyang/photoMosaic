@@ -23,4 +23,6 @@ public:
     void showIcons(int x, int y, int numCol);
     int getMatchingIcon(int val);
     void saveImage(ofxCvGrayscaleImage image);
+    
+    ofxCvGrayscaleImage 	tempGrayImage; //place holder for testApp to save grayImage here
 };

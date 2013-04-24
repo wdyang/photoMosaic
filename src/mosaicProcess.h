@@ -17,7 +17,8 @@ public:
     MosaicSet mosaicSet;
     bool bZoomOut = true; //by default, we zoom out
     bool AdvanceRandom = true;
-    bool UseEnd = false;
+    bool bUseEnd = false;
+    bool bUseVideo = false;
     
     int idxImageAtDisplay = 0;
     int idxTargetImage = 0;

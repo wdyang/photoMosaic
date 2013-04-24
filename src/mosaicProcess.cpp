@@ -173,18 +173,22 @@ void MosaicProcess::transition_from2mid(float delta){
 }
 
 void MosaicProcess::draw(){
-    imageSet.showIcons(640, 0,  10);
+    imageSet.showIcons(640+100, 0,  10);
     displayImage.draw(0, 0);
-    imageSet.grayImages[idxTargetImage].draw(0,480, mid_width, mid_height);
+    imageSet.grayImages[idxTargetImage].draw(640+100,480, mid_width, mid_height);
     
 }
 
 void MosaicProcess::advance(){
     if(bZoomOut){ //Zooming out, previous image becomes a part of new image
         int idxPre = idxTargetImage; //Pre is in the center of TargetImage
-        if(UseEnd){
+        if(bUseVideo){
+            imageSet.addImage(imageSet.tempGrayImage);
+            imageSet.saveImage(imageSet.tempGrayImage);
             idxTargetImage = imageSet.numImages-1;
-            UseEnd=false;
+        }else if(bUseEnd){
+            idxTargetImage = imageSet.numImages-1;
+            bUseEnd=false;
         }else if(AdvanceRandom){
             idxTargetImage = rand()% imageSet.numImages;
         }else{
@@ -199,9 +203,13 @@ void MosaicProcess::advance(){
         mosaicSet.buildSet(idxPre, idxTargetImage);
     }else{ //Zomming in, previous image becomes a mosaic that contains the new image
         idxTargetImage=idxPre;
-        if(UseEnd){
+        if(bUseVideo){
+            imageSet.addImage(imageSet.tempGrayImage);
+            imageSet.saveImage(imageSet.tempGrayImage);
             idxPre = imageSet.numImages-1;
-            UseEnd=false;
+        }else if(bUseEnd){
+            idxPre = imageSet.numImages-1;
+            bUseEnd=false;
         }else if(AdvanceRandom){
             idxPre = rand()% imageSet.numImages;
         }else{

@@ -58,6 +58,9 @@ void testApp::update(){
         #endif
 
         grayImage = colorImg;
+        if(mosaicProcess.bUseVideo){
+            imageSet->tempGrayImage = grayImage;
+        }
 		if (bLearnBakground == true){
 			grayBg = grayImage;		// the = sign copys the pixels from grayImage into grayBg (operator overloading)
 			bLearnBakground = false;
@@ -85,7 +88,7 @@ void testApp::draw(){
 	// draw the incoming, the grayscale, the bg and the thresholded difference
 	ofSetHexColor(0xffffff);
 //	colorImg.draw(20,20);
-	grayImage.draw(640,0);
+	grayImage.draw(640+100,0);
 //	grayBg.draw(20,280);
 //	grayDiff.draw(360,280);
 
@@ -149,7 +152,7 @@ void testApp::keyPressed(int key){
 			break;
         case 'n':
             imageSet->addImage(grayImage);
-            mosaicProcess.UseEnd = true;
+            mosaicProcess.bUseEnd = true;
             imageSet->saveImage(grayImage);
             break;
 	}
