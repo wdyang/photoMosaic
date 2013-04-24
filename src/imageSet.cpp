@@ -51,6 +51,7 @@ void ImageSet::loadImages(){
             setImageFromFile(i,dir.getPath(i));
         }
     }
+    numPresetImages = numImages;
 }
 
 void ImageSet::setImageFromFile(int i, string fname){

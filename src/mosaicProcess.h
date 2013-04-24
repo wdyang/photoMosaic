@@ -19,6 +19,7 @@ public:
     bool AdvanceRandom = true;
     bool bUseEnd = false;
     bool bUseVideo = false;
+    bool bUsePresetOnly = false;
     
     int idxImageAtDisplay = 0;
     int idxTargetImage = 0;

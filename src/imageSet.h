@@ -15,7 +15,7 @@ public:
     vector<ofxCvGrayscaleImage> grayIcons;
     vector<float> imageMeans;
 
-    int numImages;
+    int numImages, numPresetImages;
     
     void addImage(ofxCvGrayscaleImage imageIn);
     void loadImages();

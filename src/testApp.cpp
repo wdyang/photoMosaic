@@ -58,9 +58,9 @@ void testApp::update(){
         #endif
 
         grayImage = colorImg;
-        if(mosaicProcess.bUseVideo){
-            imageSet->tempGrayImage = grayImage;
-        }
+//        if(mosaicProcess.bUseVideo){
+        imageSet->tempGrayImage = grayImage;
+//        }
 		if (bLearnBakground == true){
 			grayBg = grayImage;		// the = sign copys the pixels from grayImage into grayBg (operator overloading)
 			bLearnBakground = false;

@@ -190,7 +190,8 @@ void MosaicProcess::advance(){
             idxTargetImage = imageSet.numImages-1;
             bUseEnd=false;
         }else if(AdvanceRandom){
-            idxTargetImage = rand()% imageSet.numImages;
+            idxTargetImage = bUsePresetOnly ? rand()% imageSet.numPresetImages : rand() % imageSet.numImages;
+//                idxTargetImage = rand()% imageSet.numImages;
         }else{
             idxTargetImage++;
             if(idxTargetImage==imageSet.numImages)
@@ -211,7 +212,7 @@ void MosaicProcess::advance(){
             idxPre = imageSet.numImages-1;
             bUseEnd=false;
         }else if(AdvanceRandom){
-            idxPre = rand()% imageSet.numImages;
+            idxPre = bUsePresetOnly ? rand()% imageSet.numPresetImages : rand() % imageSet.numImages;
         }else{
             idxPre++;
             if(idxPre==imageSet.numImages)

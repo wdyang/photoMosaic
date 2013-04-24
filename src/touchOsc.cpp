@@ -51,8 +51,12 @@ void testApp::parseIpadOSCMessage(){
             mosaicProcess.bUseEnd = true;
             imageSet->saveImage(grayImage);
         }
-    }else if("/1/useVideo"){
+    }else if(raw_address=="/1/useVideo"){
         mosaicProcess.bUseVideo = m.getArgAsInt32(0);
+        cout<<"bUseVideo "<<mosaicProcess.bUseVideo;
+    }else if(raw_address=="/1/presetOnly"){
+        mosaicProcess.bUsePresetOnly = m.getArgAsInt32(0);
+        cout<<"bUsePresetOnly "<<mosaicProcess.bUsePresetOnly;
     }else{
         cout<<"not handled: "<<raw_address<<endl;
     }
@@ -66,6 +70,7 @@ void testApp::oscSendInitConfig(){
     oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
     oscSendInt("/1/zoomOut", mosaicProcess.bZoomOut);
     oscSendInt("/1/useVideo", mosaicProcess.bUseVideo);
+    oscSendInt("/1/presetOnly", mosaicProcess.bUsePresetOnly);
     
     string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
     oscSendString("/1/labelZoom", msg);
