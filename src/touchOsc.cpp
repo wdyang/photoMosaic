@@ -53,10 +53,29 @@ void testApp::parseIpadOSCMessage(){
         }
     }else if(raw_address=="/1/useVideo"){
         mosaicProcess.bUseVideo = m.getArgAsInt32(0);
-        cout<<"bUseVideo "<<mosaicProcess.bUseVideo;
+        cout<<"bUseVideo "<<mosaicProcess.bUseVideo<<endl;
     }else if(raw_address=="/1/presetOnly"){
         mosaicProcess.bUsePresetOnly = m.getArgAsInt32(0);
-        cout<<"bUsePresetOnly "<<mosaicProcess.bUsePresetOnly;
+        cout<<"bUsePresetOnly "<<mosaicProcess.bUsePresetOnly<<endl;
+    }else if(raw_address=="/1/brightness"){
+        mosaicProcess.brightness = m.getArgAsFloat(0);
+        oscSendFloat("/1/labelBrightness", mosaicProcess.brightness);
+        cout<<"brightness "<<mosaicProcess.brightness<<endl;
+    }else if(raw_address=="/1/contrast"){
+        mosaicProcess.contrast = m.getArgAsFloat(0);
+        oscSendFloat("/1/labelContrast", mosaicProcess.contrast);
+        cout<<"contrast "<<mosaicProcess.contrast<<endl;
+    }else if(raw_address=="/1/reset"){
+        int val=m.getArgAsFloat(0);
+        if(val==1){
+            cout<<"reset brightness and contrast"<<endl;
+            mosaicProcess.brightness = 0;
+            mosaicProcess.contrast = 0;
+            oscSendFloat("/1/brightness", 0);
+            oscSendFloat("/1/contrast", 0);
+            oscSendFloat("/1/labelBrightness", 0);
+            oscSendFloat("/1/labelContrast", 0);
+        }
     }else{
         cout<<"not handled: "<<raw_address<<endl;
     }
@@ -71,6 +90,10 @@ void testApp::oscSendInitConfig(){
     oscSendInt("/1/zoomOut", mosaicProcess.bZoomOut);
     oscSendInt("/1/useVideo", mosaicProcess.bUseVideo);
     oscSendInt("/1/presetOnly", mosaicProcess.bUsePresetOnly);
+    oscSendFloat("/1/brightness", mosaicProcess.brightness);
+    oscSendFloat("/1/labelBrightness", mosaicProcess.brightness);
+    oscSendFloat("/1/contrast", mosaicProcess.contrast);
+    oscSendFloat("/1/labelContrast", mosaicProcess.contrast);
     
     string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
     oscSendString("/1/labelZoom", msg);

@@ -37,7 +37,7 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	ofBackground(100,100,100);
+	ofBackground(0,0,0);
 
     bool bNewFrame = false;
 
@@ -88,7 +88,7 @@ void testApp::draw(){
 	// draw the incoming, the grayscale, the bg and the thresholded difference
 	ofSetHexColor(0xffffff);
 //	colorImg.draw(20,20);
-	grayImage.draw(640+100,0);
+	grayImage.draw(900,0, cam_w/2, cam_h/2);
 //	grayBg.draw(20,280);
 //	grayDiff.draw(360,280);
 

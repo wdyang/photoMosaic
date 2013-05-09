@@ -173,9 +173,10 @@ void MosaicProcess::transition_from2mid(float delta){
 }
 
 void MosaicProcess::draw(){
-    imageSet.showIcons(640+100, 0,  10);
-    displayImage.draw(0, 0);
-    imageSet.grayImages[idxTargetImage].draw(640+100,480, mid_width, mid_height);
+    imageSet.showIcons(900, 520,  20);
+    displayImage.brightnessContrast(brightness, contrast);
+    displayImage.draw(10, 10, 800, 600);
+    imageSet.grayImages[idxTargetImage].draw(900,260, 320, 240); //, mid_width, mid_height);
     
 }
 
