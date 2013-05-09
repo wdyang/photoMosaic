@@ -24,6 +24,8 @@ void testApp::parseIpadOSCMessage(){
         }
     }else if(raw_address=="/1/runMosaic"){
         bUpdateMosaic = m.getArgAsInt32(0);
+    }else if(raw_address=="/1/stay"){
+        mosaicProcess.bStay = m.getArgAsInt32(0);
     }else if(raw_address=="/1/mosaicSpeed"){
         mosaicProcess.speed = m.getArgAsFloat(0);
         oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
@@ -85,6 +87,7 @@ void testApp::parseIpadOSCMessage(){
 void testApp::oscSendInitConfig(){
     oscSendString("/1/connect/color", "green");
     oscSendInt("/1/runMosaic", bUpdateMosaic);
+    oscSendInt("/1/stay", mosaicProcess.bStay);
     oscSendFloat("/1/mosaicSpeed", mosaicProcess.speed);
     oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
     oscSendInt("/1/zoomOut", mosaicProcess.bZoomOut);

@@ -20,6 +20,7 @@ public:
     bool bUseEnd = false;
     bool bUseVideo = false;
     bool bUsePresetOnly = false;
+    bool bStay = false;
     
     int idxImageAtDisplay = 0;
     int idxTargetImage = 0;
@@ -32,6 +33,7 @@ public:
     
     ofxCvGrayscaleImage mosaicImage;
     ofxCvGrayscaleImage displayImage;
+    ofxCvGrayscaleImage showImage;
     
     int mosaicY = full_height/icon_height;
     int mosaicX = full_width/icon_width;

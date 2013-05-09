@@ -16,10 +16,12 @@ void MosaicProcess::setup(){
 
 void MosaicProcess::update(){
     if(drawStage==0){ //showing the gray image
-        if(z>0){
-            z-=speed;
-        }else{
-            advance();
+        if(!bStay){
+            if(z>0){
+                z-=speed;
+            }else{
+                advance();
+            }
         }
     }
     if(drawStage==1){
@@ -28,7 +30,9 @@ void MosaicProcess::update(){
         transition_mid2mosaic(speed);
     }else if(drawStage==3){
         transition_from2mid(speed);
+//        displayImage.brightnessContrast(brightness, contrast);
     }
+
 }
 
 void MosaicProcess::transition_mosaic2gray(float delta){
@@ -174,8 +178,9 @@ void MosaicProcess::transition_from2mid(float delta){
 
 void MosaicProcess::draw(){
     imageSet.showIcons(900, 520,  20);
-    displayImage.brightnessContrast(brightness, contrast);
-    displayImage.draw(10, 10, 800, 600);
+    showImage = displayImage;
+    showImage.brightnessContrast(brightness, contrast);
+    showImage.draw(10, 10, 800, 600);
     imageSet.grayImages[idxTargetImage].draw(900,260, 320, 240); //, mid_width, mid_height);
     
 }
