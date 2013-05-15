@@ -18,7 +18,7 @@ void MosaicProcess::update(){
     if(drawStage==0){ //showing the gray image
         if(!bStay){
             if(z>0){
-                z-=speed;
+                z-=speed/(hesitation*hesitation);
             }else{
                 advance();
             }

@@ -26,6 +26,7 @@ public:
     int idxTargetImage = 0;
     int idxPre = 0;
     
+    float hesitation = 1;
     float brightness = 0, contrast = 0;
     
     float z; //0 - 1

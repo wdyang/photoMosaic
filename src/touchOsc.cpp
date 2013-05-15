@@ -67,6 +67,10 @@ void testApp::parseIpadOSCMessage(){
         mosaicProcess.contrast = m.getArgAsFloat(0);
         oscSendFloat("/1/labelContrast", mosaicProcess.contrast);
         cout<<"contrast "<<mosaicProcess.contrast<<endl;
+    }else if(raw_address=="/1/hesitation"){
+        mosaicProcess.hesitation = m.getArgAsFloat(0);
+        oscSendFloat("/1/labelHesitation", mosaicProcess.hesitation);
+        cout<<"contrast "<<mosaicProcess.hesitation<<endl;
     }else if(raw_address=="/1/reset"){
         int val=m.getArgAsFloat(0);
         if(val==1){
@@ -97,6 +101,8 @@ void testApp::oscSendInitConfig(){
     oscSendFloat("/1/labelBrightness", mosaicProcess.brightness);
     oscSendFloat("/1/contrast", mosaicProcess.contrast);
     oscSendFloat("/1/labelContrast", mosaicProcess.contrast);
+    oscSendFloat("/1/hesitation", mosaicProcess.hesitation);
+    oscSendFloat("/1/labelHesitation", mosaicProcess.hesitation);
     
     string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
     oscSendString("/1/labelZoom", msg);
