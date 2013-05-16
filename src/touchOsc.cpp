@@ -81,6 +81,9 @@ void testApp::parseIpadOSCMessage(){
             oscSendFloat("/1/contrast", 0);
             oscSendFloat("/1/labelBrightness", 0);
             oscSendFloat("/1/labelContrast", 0);
+            mosaicProcess.speed = 0.01;
+            oscSendFloat("/1/mosaicSpeed", mosaicProcess.speed);
+            oscSendFormatedFloat("/1/labelSpeed", mosaicProcess.speed, 4);
         }
     }else{
         cout<<"not handled: "<<raw_address<<endl;

@@ -46,4 +46,6 @@ public:
     void transition_mid2mosaic(float delta);
     void transition_from2mid(float delta);
     float speed = 0.01;
+    
+    float slowStartRatio = 0.01; //Make initial movement small
 };

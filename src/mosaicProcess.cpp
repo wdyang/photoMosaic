@@ -144,7 +144,8 @@ void MosaicProcess::transition_from2mid(float delta){
     int h1 = 5*full_height;
     int x,y,w, h;
     if(bZoomOut){ //full image to mid mosaic
-        z *= (1+delta);  //z starts from 1, ends at 5
+        z *= (1+delta*slowStartRatio);  //z starts from 1, ends at 5
+        if(slowStartRatio<1) slowStartRatio+=0.01;
         if(z<=5){
             w = w0*z;
             h = h0*z;
@@ -155,6 +156,7 @@ void MosaicProcess::transition_from2mid(float delta){
             displayImage.setFromPixels(mosaicSet.mosaicStageFullRes.getRoiPixels(), w, h);
             displayImage.resize(full_width, full_height);
         }else{
+            slowStartRatio = 0.1;
             drawStage--;
             z=1;
         }
