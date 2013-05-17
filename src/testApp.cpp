@@ -7,7 +7,7 @@ void testApp::setup(){
 //        int numDevices = vidGrabber.listDevices();
     
         vidGrabber.setVerbose(true);
-    vidGrabber.setDeviceID(0);
+    vidGrabber.setDeviceID(1);
     if(vidGrabber.initGrabber(cam_w,cam_h)){
 //        vidGrabber.setDeviceID(0);
 //        vidGrabber.initGrabber(cam_w,cam_h);
@@ -32,7 +32,7 @@ void testApp::setup(){
     ipadReceiver.setup(PORT_FROM_IPAD);
 //    ipadSender.setup(HOST_IPAD, PORT_TO_IPAD);
     
-    
+    music.loadSound("Mosaic.mp3");
 }
 
 //--------------------------------------------------------------
@@ -79,6 +79,11 @@ void testApp::update(){
     
     while(ipadReceiver.hasWaitingMessages()){
         parseIpadOSCMessage();
+    }
+    
+    if(music.getIsPlaying()){
+        oscSendString("/1/labelMusicPositionMs", msToTime(music.getPositionMS()));
+        oscSendFloat("/1/musicPosition", music.getPosition());
     }
 }
 

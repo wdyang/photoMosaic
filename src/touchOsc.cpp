@@ -71,6 +71,33 @@ void testApp::parseIpadOSCMessage(){
         mosaicProcess.hesitation = m.getArgAsFloat(0);
         oscSendFloat("/1/labelHesitation", mosaicProcess.hesitation);
         cout<<"contrast "<<mosaicProcess.hesitation<<endl;
+// Music player
+// Add musicPosition, music msToTime() in testApp.h
+    }else if(raw_address=="/1/musicVolume"){
+        music.setVolume(m.getArgAsFloat(0));
+        oscSendFloat("/1/labelVolume", music.getVolume());
+    }else if(raw_address=="/1/musicPlaying"){
+        bool playing = m.getArgAsInt32(0);
+        if(playing){
+            music.play();
+            music.setPosition(musicPosition);
+        }else{
+            musicPosition = music.getPosition();
+            music.stop();
+        }
+    }else if(raw_address=="/1/musicReset"){
+        if(m.getArgAsInt32(0)==0){
+            musicPosition = 0.f;
+            music.setPosition(musicPosition);
+            oscSendFloat("/1/musicPosition", 0.f);
+            oscSendFloat("/1/labelMusicPositionMs", 0.f);
+        }
+    }else if(raw_address=="/1/musicPosition"){
+        musicPosition = m.getArgAsFloat(0);
+        music.setPosition(musicPosition);
+        oscSendFloat("/1/MusicPosition", musicPosition);
+        oscSendString("/1/labelMusicPositionMs", msToTime(music.getPositionMS()));
+// End Music Player
     }else if(raw_address=="/1/reset"){
         int val=m.getArgAsFloat(0);
         if(val==1){
@@ -106,6 +133,11 @@ void testApp::oscSendInitConfig(){
     oscSendFloat("/1/labelContrast", mosaicProcess.contrast);
     oscSendFloat("/1/hesitation", mosaicProcess.hesitation);
     oscSendFloat("/1/labelHesitation", mosaicProcess.hesitation);
+    
+    oscSendFloat("/1/musicVolume", music.getVolume());
+    oscSendInt("/1/musicPlaying", music.getIsPlaying());
+    oscSendFloat("/1/labelMusicPositionMs", music.getPositionMS());
+    oscSendFloat("/1/musicPosition", music.getPosition());
     
     string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
     oscSendString("/1/labelZoom", msg);
@@ -144,3 +176,15 @@ void testApp::oscSendInt(const string &address, int msg){
     m.addIntArg(msg);
     ipadSender.sendMessage(m);
 }
+
+
+
+string testApp::msToTime(int ms){
+    
+    int sec = ms/1000;
+    std::ostringstream s;
+    s<<sec/60<<":"<<sec%60;
+    
+    return s.str();
+}
+

@@ -73,5 +73,8 @@ public:
     void oscSendFormatedFloat(const string &address, float msg, int precision); //precision is the number of decimal points
     void oscSendString(const string &address, const string &msg);
 
+    ofSoundPlayer music;
+    float musicPosition = 0.f;
+    string msToTime(int ms);
 };
 
