@@ -97,7 +97,13 @@ void testApp::parseIpadOSCMessage(){
         music.setPosition(musicPosition);
         oscSendFloat("/1/MusicPosition", musicPosition);
         oscSendString("/1/labelMusicPositionMs", msToTime(music.getPositionMS()));
-// End Music Player
+        // End Music Player
+    }else if(raw_address=="/1/zoom"){
+        float zoom = m.getArgAsFloat(0);
+        mosaicProcess.display_w = (int) (mosaicProcess.max_display_w*zoom);
+        if(mosaicProcess.display_w>1024) mosaicProcess.display_w = 1024;
+        if(mosaicProcess.display_w<2) mosaicProcess.display_w = 2;
+        mosaicProcess.display_h = mosaicProcess.display_w * 3 / 4;
     }else if(raw_address=="/1/reset"){
         int val=m.getArgAsFloat(0);
         if(val==1){
@@ -138,6 +144,8 @@ void testApp::oscSendInitConfig(){
     oscSendInt("/1/musicPlaying", music.getIsPlaying());
     oscSendFloat("/1/labelMusicPositionMs", music.getPositionMS());
     oscSendFloat("/1/musicPosition", music.getPosition());
+    
+    oscSendFloat("/1/zoom", mosaicProcess.display_w*1.0/mosaicProcess.max_display_w);
     
     string msg = mosaicProcess.bZoomOut ? "Zoom out" : "Zoom in";
     oscSendString("/1/labelZoom", msg);
