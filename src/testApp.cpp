@@ -7,7 +7,7 @@ void testApp::setup(){
 //        int numDevices = vidGrabber.listDevices();
     
         vidGrabber.setVerbose(true);
-    vidGrabber.setDeviceID(1);
+    vidGrabber.setDeviceID(0);
     if(vidGrabber.initGrabber(cam_w,cam_h)){
 //        vidGrabber.setDeviceID(0);
 //        vidGrabber.initGrabber(cam_w,cam_h);
@@ -93,7 +93,7 @@ void testApp::draw(){
 	// draw the incoming, the grayscale, the bg and the thresholded difference
 	ofSetHexColor(0xffffff);
 //	colorImg.draw(20,20);
-	grayImage.draw(900,0, cam_w/2, cam_h/2);
+	grayImage.draw(1050,0, cam_w/2, cam_h/2);
 //	grayBg.draw(20,280);
 //	grayDiff.draw(360,280);
 
@@ -140,6 +140,18 @@ void testApp::keyPressed(int key){
 	switch (key){
 		case ' ':
 			bUpdateMosaic = !bUpdateMosaic;
+			break;
+		case '1':
+			if(mosaicProcess.display_w>2){
+                mosaicProcess.display_w--;
+                mosaicProcess.display_h = mosaicProcess.display_w * 3 / 4;
+            }
+			break;
+		case '2':
+			if(mosaicProcess.display_w<mosaicProcess.max_display_w){
+                mosaicProcess.display_w++;
+                mosaicProcess.display_h = mosaicProcess.display_w * 3 / 4;
+            }
 			break;
 		case 'l':
 			bLearnBakground = true;

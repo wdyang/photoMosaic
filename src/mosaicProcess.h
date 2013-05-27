@@ -26,6 +26,10 @@ public:
     int idxTargetImage = 0;
     int idxPre = 0;
     
+    int display_w=1024;
+    int display_h=768;
+    int max_display_w=1024, max_display_h=768;
+    
     float hesitation = 1;
     float brightness = 0, contrast = 0;
     
@@ -47,5 +51,5 @@ public:
     void transition_from2mid(float delta);
     float speed = 0.01;
     
-    float slowStartRatio = 0.01; //Make initial movement small
+    float slowStartRatio = 0.0001; //Make initial movement small
 };

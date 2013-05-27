@@ -145,7 +145,7 @@ void MosaicProcess::transition_from2mid(float delta){
     int x,y,w, h;
     if(bZoomOut){ //full image to mid mosaic
         z *= (1+delta*slowStartRatio);  //z starts from 1, ends at 5
-        if(slowStartRatio<1) slowStartRatio+=0.01;
+        if(slowStartRatio<1) slowStartRatio*=1.01;
         if(z<=5){
             w = w0*z;
             h = h0*z;
@@ -179,11 +179,11 @@ void MosaicProcess::transition_from2mid(float delta){
 }
 
 void MosaicProcess::draw(){
-    imageSet.showIcons(900, 520,  20);
+    imageSet.showIcons(1050, 520,  20);
     showImage = displayImage;
     showImage.brightnessContrast(brightness, contrast);
-    showImage.draw(10, 10, 800, 600);
-    imageSet.grayImages[idxTargetImage].draw(900,260, 320, 240); //, mid_width, mid_height);
+    showImage.draw(5+(max_display_w-display_w)/2, 5+(max_display_h-display_h)/2, display_w, display_h);
+    imageSet.grayImages[idxTargetImage].draw(1050,260, 320, 240); //, mid_width, mid_height);
     
 }
 
